@@ -10,9 +10,8 @@ LABEL maintainer="Backplane BV <info@backplane.be>"
 # this container is only run directly to setup a "testrig" volume; the actual
 # linting and testing is run directly from that volume
 
-ARG AG="env DEBIAN_FRONTEND=noninteractive apt-get -yq --no-install-recommends"
-
 RUN set -x \
+  && export AG="env DEBIAN_FRONTEND=noninteractive apt-get -yq --no-install-recommends" \
   && $AG update \
   && $AG install \
     bash \
