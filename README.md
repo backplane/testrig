@@ -9,6 +9,10 @@ This repo's images are automatically published to <https://hub.docker.com/r/back
 * `backplanebv/testrig:latest-debian` - for use testing python code in debian-based containers
 * `backplanebv/testrig:latest-alpine` - for use testing python code in alpine-based containers
 
+## License Note
+
+The AGPL v3 LICENSE in this repo covers only the code in the repo, the built docker images contain various software packages which have their own licenses.
+
 ## Misc Notes
 
 docker "platform" | "arch" command output
