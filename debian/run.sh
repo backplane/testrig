@@ -32,7 +32,7 @@ main() {
   flake8 .
 
   warn "==> mypy"
-  mypy --ignore-missing-imports .
+  mypy .
 
   warn "==> bandit"
   bandit -r . -x ./venv
