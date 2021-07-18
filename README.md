@@ -1,8 +1,15 @@
-# wip: testrig
+# wip: TestRig
 
 utility container for running linting and testing tools in existing python containers
 
-## notes
+## Docker Images
+
+This repo's images are automatically published to <https://hub.docker.com/r/backplanebv/testrig>. Tags are in the format `{semver}-{distro}` (for example: `v0.3.1-debian`). In addition, the latest version of each distro image is available with these tags:
+
+* `backplanebv/testrig:latest-debian` - for use testing python code in debian-based containers
+* `backplanebv/testrig:latest-alpine` - for use testing python code in alpine-based containers
+
+## Misc Notes
 
 docker "platform" | "arch" command output
 ----------------- | ---------------------
