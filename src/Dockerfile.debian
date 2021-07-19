@@ -43,7 +43,7 @@ RUN set -x \
   && true
 
 COPY --from=0 /testrig /testrig-src
-COPY run.sh /testrig-src/
+COPY run.sh /testrig-src/run
 
 COPY entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]

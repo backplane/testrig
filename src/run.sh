@@ -1,6 +1,6 @@
 #!/bin/sh
 # utility for running python testing utilities installed under /testrig/venv
-SELF="$(basename "$0")"
+SELF="testrig"
 
 VENV="$(dirname "$0")/venv"
 
@@ -19,25 +19,25 @@ main() {
   warn "loading virtualenv"
   . "${VENV}/bin/activate"
 
-  warn "==> black"
+  warn "###################### black  ######################"
   black --check .
 
-  warn "==> isort"
+  warn "###################### isort  ######################"
   isort --check .
 
-  warn "==> pylint"
+  warn "###################### pylint ######################"
   pylint -- ./*.py
 
-  warn "==> flake8"
+  warn "###################### flake8 ######################"
   flake8 .
 
-  warn "==> mypy"
+  warn "######################  mypy  ######################"
   mypy .
 
-  warn "==> bandit"
+  warn "###################### bandit ######################"
   bandit -r . -x ./venv
 
-  warn "ALL CHECKS PASSED"
+  warn "######################  PASS  ######################"
   exit 0
 }
 

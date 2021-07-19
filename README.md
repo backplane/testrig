@@ -9,14 +9,30 @@ This repo's images are automatically published to <https://hub.docker.com/r/back
 * `backplanebv/testrig:latest-debian` - for use testing python code in debian-based containers
 * `backplanebv/testrig:latest-alpine` - for use testing python code in alpine-based containers
 
+## demo
+
+```sh
+docker-compose build alpine demoapp
+docker-compose run --rm testrig-setup # only needed once
+docker-compose run --rm testrig
+```
+
 ## License Note
 
 The AGPL v3 LICENSE in this repo covers only the code in the repo, the built docker images contain various software packages which have their own licenses.
 
-## Misc Notes
+## Misc Dev Notes
 
 docker "platform" | "arch" command output
 ----------------- | ---------------------
 `amd64`           | `x86_64`
 `arm64`           | `aarch64`
 `arm/v7`          | `armv7l`
+
+```python
+steps = "black isort pylint flake8 mypy bandit PASS".split()
+padded_step_width = max([len(s) for s in steps]) + 2
+padded_steps = [s.center(padded_step_width) for s in steps]
+line_width = 80 - len('2021-07-19T11:25:25 testrig ')
+print("\n".join([line.center(line_width, "#") for line in padded_steps]))
+```

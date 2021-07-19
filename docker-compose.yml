@@ -1,6 +1,40 @@
 version: '3'
 services:
-    debian:
-        build: debian
-    alpine:
-        build: alpine
+  alpine:
+    image: alpine
+    build:
+      context: src
+      dockerfile: Dockerfile.alpine
+
+  debian:
+    image: debian
+    build:
+      context: src
+      dockerfile: Dockerfile.debian
+
+  # the following lines are for demo purposes
+
+  # a python app (with it's own os-level and app-level deps)
+  demoapp:
+    image: demoapp
+    build: demoapp
+
+  # populates a named volume at /testrig
+  # this only needs to run once to setup the volume
+  testrig-setup:
+    image: alpine
+    volumes:
+      - "testrig:/testrig"
+    restart: 'no'
+
+  # runs the regular demoapp container image...
+  # with /testrig volume attached
+  # with /testrig/run as the entrypoint
+  testrig:
+    image: demoapp
+    volumes:
+      - "testrig:/testrig"
+    entrypoint: /testrig/run
+
+volumes:
+  testrig:
