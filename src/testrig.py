@@ -47,6 +47,17 @@ def call(cmd: List[str]):
         raise subprocess.CalledProcessError(exit_code, cmd)
 
 
+def get_setting(
+    config: Optional[configparser.ConfigParser], section: str, key: str
+) -> Optional[str]:
+    """
+    helper for getting an optional key from an optional section of an optional configparser
+    """
+    if config is not None and section in config:
+        return config[section].get(key)
+    return None
+
+
 def source_walk(ctx: Context) -> List[str]:
     """
     walk the cwd looking for python source files, return the list, skipping
@@ -54,11 +65,8 @@ def source_walk(ctx: Context) -> List[str]:
     """
     results = []
     exclude_paths = set([])
-    if ctx.config:
-        raw_exclude = ctx.config.get(CONFIG_SECTION_PYLINT, EXCLUDE)
-        exclude_paths = {
-            os.path.normpath(path.strip()) for path in raw_exclude.split(",")
-        }
+    if (rawval := get_setting(ctx.config, CONFIG_SECTION_PYLINT, EXCLUDE)) is not None:
+        exclude_paths = {os.path.normpath(path.strip()) for path in rawval.split(",")}
     logging.debug("loaded exclude paths: %s", exclude_paths)
     for path, subdirs, files in os.walk("."):
         # prune excluded subdirs from the walk
@@ -105,9 +113,8 @@ def run_mypy(ctx: Context):
 def run_bandit(ctx: Context):
     """run the security-oriented code linter bandit"""
     exclude_paths = []
-    if ctx.config:
-        raw_exclude = ctx.config.get(CONFIG_SECTION_BANDIT, EXCLUDE)
-        exclude_paths = [path.strip() for path in raw_exclude.split(",")]
+    if (rawval := get_setting(ctx.config, CONFIG_SECTION_BANDIT, EXCLUDE)) is not None:
+        exclude_paths = [path.strip() for path in rawval.split(",")]
 
     if exclude_paths:
         cmd = ["bandit", "-r", "-x", ",".join(exclude_paths), "."]
