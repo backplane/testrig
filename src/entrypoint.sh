@@ -18,7 +18,7 @@ main() {
   set -e
 
   warn "==> starting rsync from ${SRC_DIR} to ${DEST_DIR}"
-  rsync -avhHP8SXA --delete "${SRC_DIR}/." "${DEST_DIR}/."
+  rsync -aqhHSXA --delete "$@" -- "${SRC_DIR}/." "${DEST_DIR}/."
 
   warn "DONE"
   exit 0
