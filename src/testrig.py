@@ -8,6 +8,11 @@ import subprocess  # nosec B404 considered
 import sys
 from typing import Callable, Dict, Final, List, NamedTuple, Optional
 
+DEFAULT_CONFIG_FILE: Final = "./setup.cfg"
+CONFIG_SECTION_PYLINT: Final = "testrig.pylint"
+CONFIG_SECTION_BANDIT: Final = "testrig.bandit"
+EXCLUDE: Final = "exclude"
+
 
 class Context(NamedTuple):
     """
@@ -16,12 +21,6 @@ class Context(NamedTuple):
 
     args: argparse.Namespace
     config: Optional[configparser.ConfigParser]
-
-
-DEFAULT_CONFIG_FILE: Final = "./setup.cfg"
-CONFIG_SECTION_PYLINT: Final = "testrig.pylint"
-CONFIG_SECTION_BANDIT: Final = "testrig.bandit"
-EXCLUDE: Final = "exclude"
 
 
 def call(cmd: List[str]):
@@ -78,6 +77,19 @@ def source_walk(ctx: Context) -> List[str]:
                 results.append(os.path.join(path, file))
 
     return results
+
+
+def banner(message: str, is_error: bool = False):
+    """
+    prints the given message center-padded by "#", to 80 columns; delimits
+    sections in the output
+    """
+    # "2021-07-20 01:05:13,913 INFO " is 29 chars; 80-29 = 51 chars for info
+    # "2021-07-20 01:05:01,950 ERROR " is 30 chars; 80-30 = 50 chars for error
+    if is_error:
+        logging.error(f" {message} ".center(50, "#"))
+        return
+    logging.info(f" {message} ".center(51, "#"))
 
 
 def run_black(ctx: Context):
@@ -202,26 +214,28 @@ def main() -> int:
                 args.config,
             )
 
+    ctx = Context(args, confp)
     for step in handlers:
         if step in args.skip:
+            logging.debug("skipping %s", step)
             continue
-        logging.info(f" {step} ".center(51, "#"))
+        banner(step)
         try:
-            handlers[step](Context(args, confp))
-        except subprocess.CalledProcessError as e:
+            handlers[step](ctx)
+        except subprocess.CalledProcessError as err:
             if step in args.failok:
                 logging.warning(
-                    "%s gave non-zero exit code: %s [ignoring]", step, e.returncode
+                    "%s gave non-zero exit code: %s [ignoring]", step, err.returncode
                 )
                 continue
-            logging.error("%s gave non-zero exit code: %s", step, e.returncode)
-            logging.error(" FAIL ".center(50, "#"))
-            return e.returncode
+            logging.error("%s gave non-zero exit code: %s", step, err.returncode)
+            banner("FAIL", True)
+            return err.returncode
         except KeyboardInterrupt:
             logging.error("%s interrupted by user request (KeyboardInterrupt)", step)
             return 1
 
-    logging.info(" PASS ".center(51, "#"))
+    banner("PASS")
     return 0
 
 
