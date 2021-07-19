@@ -1,6 +1,8 @@
 # wip: TestRig
 
-utility container for running linting and testing tools in existing python containers
+utility container for linting and testing existing uninstrumented python containers
+
+We populate a persistent volume with linting and testing tools in a virtualenv. Next we test existing containers by attaching the volume to them and aiming the entrypoint at the volume.
 
 TestRig uses config keys found in [`setup.cfg`](/setup.cfg) to control the directory walking it does for pylint and the exclusions it passes to bandit.
 
