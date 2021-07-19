@@ -1,44 +1,8 @@
 #!/bin/sh
-# utility for running python testing utilities installed under /testrig/venv
-SELF="testrig"
+# activate venv, start the testrig
 
 VENV="$(dirname "$0")/venv"
+TESTRIG="$(dirname "$0")/testrig.py"
 
-warn() {
-  printf '%s %s %s\n' "$(date '+%FT%T')" "$SELF" "$*" >&2
-}
-
-die() {
-  warn "FATAL:" "$@"
-  exit 1
-}
-
-main() {
-  set -e
-
-  warn "loading virtualenv"
-  . "${VENV}/bin/activate"
-
-  warn "###################### black  ######################"
-  black --check .
-
-  warn "###################### isort  ######################"
-  isort --check .
-
-  warn "###################### pylint ######################"
-  pylint -- ./*.py
-
-  warn "###################### flake8 ######################"
-  flake8 .
-
-  warn "######################  mypy  ######################"
-  mypy .
-
-  warn "###################### bandit ######################"
-  bandit -r . -x ./venv
-
-  warn "######################  PASS  ######################"
-  exit 0
-}
-
-main "$@"; exit
+. "${VENV}/bin/activate"
+exec "$TESTRIG" "$@"

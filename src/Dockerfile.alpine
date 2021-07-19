@@ -18,6 +18,9 @@ RUN set -x \
   && pip install -r /requirements.txt \
   && pip cache purge
 
+COPY ["run.sh", "/testrig/run"]
+COPY ["testrig.py", "/testrig/"]
+
 FROM alpine:3
 LABEL maintainer="Backplane BV <info@backplane.be>"
 
@@ -27,7 +30,6 @@ RUN set -x \
   && true
 
 COPY --from=0 /testrig /testrig-src
-COPY run.sh /testrig-src/run
 
 COPY entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
