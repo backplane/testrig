@@ -2,6 +2,8 @@
 
 utility container for running linting and testing tools in existing python containers
 
+TestRig uses config keys found in [`setup.cfg`](/setup.cfg) to control the directory walking it does for pylint and the exclusions it passes to bandit.
+
 ## Docker Images
 
 This repo's images are automatically published to <https://hub.docker.com/r/backplanebv/testrig>. Tags are in the format `{semver}-{distro}` (for example: `v0.3.1-debian`). In addition, the latest version of each distro image is available with these tags:
@@ -28,11 +30,3 @@ docker "platform" | "arch" command output
 `amd64`           | `x86_64`
 `arm64`           | `aarch64`
 `arm/v7`          | `armv7l`
-
-```python
-steps = "black isort pylint flake8 mypy bandit PASS".split()
-padded_step_width = max([len(s) for s in steps]) + 2
-padded_steps = [s.center(padded_step_width) for s in steps]
-line_width = 80 - len('2021-07-19T11:25:25 testrig ')
-print("\n".join([line.center(line_width, "#") for line in padded_steps]))
-```
