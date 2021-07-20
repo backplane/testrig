@@ -10,11 +10,13 @@ RUN set -x \
 
 COPY requirements.txt /
 RUN set -x \
-  && mkdir /testrig \
-  && cd /testrig \
-  && python -m venv venv \
-  && . venv/bin/activate \
-  && pip install --upgrade pip \
+  && python \
+    -m venv \
+    --system-site-packages \
+    --copies \
+    --upgrade-deps \
+    /testrig/venv \
+  && . /testrig/venv/bin/activate \
   && pip install -r /requirements.txt \
   && pip cache purge
 
