@@ -30,6 +30,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # for the README this one-liner might be helpful:
+        # python -c "import itertools; print('\n'.join(['-'.join(p) for p in itertools.product(['latest', 'v0.6.3'], ['3', '3.6', '3.7', '3.8', '3.9'], ['slim', 'alpine', 'slim-buster', 'alpine3.14'])]))"
         PYTHON_VERSION: ['3', '3.6', '3.7', '3.8', '3.9']
         DISTRO: ['slim', 'alpine', 'slim-buster', 'alpine3.14']
 
