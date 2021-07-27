@@ -30,7 +30,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        distro: ['debian', 'alpine']
+        PYTHON_VERSION: ['3', '3.6', '3.7', '3.8', '3.9']
+        DISTRO: ['slim', 'alpine', 'slim-buster', 'alpine3.14']
 
     permissions:
       contents: read
@@ -70,7 +71,7 @@ jobs:
           flavor: |
             latest=auto
             prefix=
-            suffix=-${{ matrix.distro }},onlatest=true
+            suffix=-${{ matrix.PYTHON_VERSION }}-${{ matrix.DISTRO }},onlatest=true
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
@@ -78,7 +79,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: src
-          file: src/Dockerfile.${{ matrix.distro }}
+          build-args: |
+            "PYTAG=${{ matrix.PYTHON_VERSION }}-${{ matrix.DISTRO }}"
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
