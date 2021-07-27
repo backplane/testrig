@@ -1,6 +1,6 @@
 # wip: TestRig
 
-utility container for linting and testing existing uninstrumented python containers
+utility container for linting and testing existing uninstrumented Python containers
 
 We populate a persistent volume with linting and testing tools in a virtualenv. Next we test existing containers by attaching the volume to them and aiming the entrypoint at the volume.
 
@@ -10,19 +10,19 @@ TestRig uses config keys found in [`setup.cfg`](/setup.cfg) to control the direc
 
 This repo's images are automatically published to [backplane/testrig](https://hub.docker.com/r/backplane/testrig) on Docker Hub. Tags are in the format `{testrig_semver}-{python_version}-{distro_version}` (for example: `v0.6.3-3.7-alpine3.14`). In addition, the latest version of each distro image is available with these tags:
 
-* `backplane/testrig:latest-3-slim` - for use testing python code in Debian-based containers
-* `backplane/testrig:latest-3-alpine` - for use testing python code in alpine-based containers
+* `backplane/testrig:latest-3-slim` - for use testing Python code in Debian-based containers
+* `backplane/testrig:latest-3-alpine` - for use testing Python code in Apline-based containers
 
 ### Other images
 
-The tags are currently a bit of a mess; they're created by a build-matrix with the goal of letting users lock to: a specific version of testrig, built for a specific version of python, on a specific version of alpine or Debian.
+The tags are currently a bit of a mess; they're created by a build-matrix with the goal of letting users lock to: a specific version of testrig, built for a specific version of Python, on a specific version of Apline or Debian.
 
 I'd suggest starting with:
 
 * `latest` for TestRig version
-* the same minor version of python the app under test is using
-* `slim` for Debian containers or `alpine` for alpine containers
-* that's `latest-3.9-slim` for python 3.9 app in a Debian container.
+* the same minor version of Python the app under test is using
+* `slim` for Debian containers or `alpine` for Apline containers
+* that's `latest-3.9-slim` for Python 3.9 app in a Debian container.
 
 This is the list of currently available images…
 
