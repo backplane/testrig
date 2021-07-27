@@ -2,7 +2,14 @@
 
 utility container for linting and testing existing uninstrumented Python containers
 
-We populate a persistent volume with linting and testing tools in a virtualenv. Next we test existing containers by attaching the volume to them and aiming the entrypoint at the volume.
+How this works:
+
+1. We create a virtualenv with linting and testing packages (`bandit`, `black`, `flake8`, `isort`, `mypy`, `pycodestyle`, `pylint`, `pytest`) -- for specific versions of python on specific distros.
+2. You create a persistent volume called `testrig` (in your compose file or manually)
+3. You run the TestRig container once (aka "testrig-setup") and it rsyncs this virtualenv to your `/testrig` persistent volume.
+4. When you want to test a python app, you run it's container with the `/testrig` persistent volume attached and the entrypoint set to `/testrig/run`.
+
+This scheme means the linting and testing packages bring their own dependencies via the `/testrig` persistent volume, the app's dependencies are already in the container image. The testing utils can load all the tested app's dependencies exactly as the app normally does. **You get to fully lint & test a production container image without having to bake in any additional infrastructure.**
 
 TestRig uses config keys found in [`setup.cfg`](/setup.cfg) to control the directory walking it does for pylint and the exclusions it passes to bandit.
 
