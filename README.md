@@ -8,10 +8,10 @@ TestRig uses config keys found in [`setup.cfg`](/setup.cfg) to control the direc
 
 ## Docker Images
 
-This repo's images are automatically published to <https://hub.docker.com/r/backplanebv/testrig>. Tags are in the format `{semver}-{distro}` (for example: `v0.3.1-debian`). In addition, the latest version of each distro image is available with these tags:
+This repo's images are automatically published to <https://hub.docker.com/r/backplane/testrig>. Tags are in the format `{semver}-{distro}` (for example: `v0.3.1-debian`). In addition, the latest version of each distro image is available with these tags:
 
-* `backplanebv/testrig:latest-debian` - for use testing python code in debian-based containers
-* `backplanebv/testrig:latest-alpine` - for use testing python code in alpine-based containers
+* `backplane/testrig:latest-debian` - for use testing python code in debian-based containers
+* `backplane/testrig:latest-alpine` - for use testing python code in alpine-based containers
 
 ## demo
 
