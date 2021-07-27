@@ -40,9 +40,9 @@ RUN set -x \
     -m venv \
     --system-site-packages \
     --copies \
-    --upgrade-deps \
     /testrig/venv \
   && . /testrig/venv/bin/activate \
+  && pip install --upgrade pip \
   && pip install -r /requirements.txt
 
 COPY ["run.sh", "/testrig/run"]
