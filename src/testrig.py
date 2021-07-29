@@ -6,7 +6,7 @@ import logging
 import os
 import subprocess  # nosec B404 considered
 import sys
-from typing import Callable, Dict, Final, List, NamedTuple, Optional
+from typing import Callable, Dict, Final, List, NamedTuple, Optional, Set
 
 DEFAULT_CONFIG_FILE: Final = "./setup.cfg"
 CONFIG_SECTION_PYLINT: Final = "testrig.pylint"
@@ -22,9 +22,21 @@ class Context(NamedTuple):
     args: argparse.Namespace
     config: Optional[configparser.ConfigParser]
 
+    def get_setting(
+        self,
+        section: str,
+        key: str,
+    ) -> Optional[str]:
+        """
+        helper for getting an optional key from an optional section of an optional configparser
+        """
+        if self.config is not None and section in self.config:
+            return self.config[section].get(key)
+        return None
+
 
 def call(cmd: List[str]):
-    """run the given utility, logging its output, return pass/fail"""
+    """run the given utility, logging its output"""
     # derived from https://stackoverflow.com/a/21978778
     logging.debug("running command: %s", cmd.__repr__())
     process = subprocess.Popen(  # nosec B603 not allowing untrusted
@@ -46,33 +58,38 @@ def call(cmd: List[str]):
         raise subprocess.CalledProcessError(exit_code, cmd)
 
 
-def get_setting(
-    config: Optional[configparser.ConfigParser], section: str, key: str
-) -> Optional[str]:
+def source_walk(root: str, exclude: Optional[Set[str]] = None) -> List[str]:
     """
-    helper for getting an optional key from an optional section of an optional configparser
-    """
-    if config is not None and section in config:
-        return config[section].get(key)
-    return None
-
-
-def source_walk(ctx: Context) -> List[str]:
-    """
-    walk the cwd looking for python source files, return the list, skipping
-    directories as configured
+    walk the given root path looking for ".py" python source files, return the
+    list, skipping files or directories of the given (optional) exclude set
     """
     results = []
-    exclude_paths = set([])
-    if (rawval := get_setting(ctx.config, CONFIG_SECTION_PYLINT, EXCLUDE)) is not None:
-        exclude_paths = {os.path.normpath(path.strip()) for path in rawval.split(",")}
-    logging.debug("loaded exclude paths: %s", exclude_paths)
-    for path, subdirs, files in os.walk("."):
-        # prune excluded subdirs from the walk
-        for epath in exclude_paths & set(subdirs):
+    exclusions = set() if exclude is None else exclude
+    full_path_compare = False
+
+    if any([os.path.sep in excl for excl in exclusions]):
+        # one of the exclusions contains a slash, meaning during the walk
+        # we need to compare the exclusion list to each subdir name, but with
+        # the path prepended
+        full_path_compare = True
+
+    for path, subdirs, files in os.walk(root):
+        # prune name-based excluded subdirs from the walk (don't descend into them)
+        for epath in exclusions & set(subdirs):
             subdirs.remove(epath)
-        # prune excluded files from the walk
-        for file in set(files) - exclude_paths:
+
+        # filter the file list (removing the name-based excluded files)
+        filtered_files = set(files) - exclusions
+
+        # filter out path-based exclusions (those containing a slash)
+        if full_path_compare:
+            full_subdir_paths = {os.path.join(path, subdir) for subdir in subdirs}
+            full_file_paths = {os.path.join(path, filename) for filename in files}
+            for epath in exclusions & full_subdir_paths:
+                subdirs.remove(epath)
+            filtered_files -= full_file_paths
+
+        for file in filtered_files:
             if file.endswith(".py"):
                 results.append(os.path.join(path, file))
 
@@ -82,7 +99,7 @@ def source_walk(ctx: Context) -> List[str]:
 def banner(message: str, is_error: bool = False):
     """
     prints the given message center-padded by "#", to 80 columns; delimits
-    sections in the output
+    major sections in the program's output
     """
     # "2021-07-20 01:05:13,913 INFO " is 29 chars; 80-29 = 51 chars for info
     # "2021-07-20 01:05:01,950 ERROR " is 30 chars; 80-30 = 50 chars for error
@@ -107,7 +124,12 @@ def run_isort(ctx: Context):
 def run_pylint(ctx: Context):
     """run the general-purpose code linter pylint"""
     # pylint: disable=unused-argument
-    call(["pylint", "--"] + source_walk(ctx))
+    exclude_paths = None
+    if (rawval := ctx.get_setting(CONFIG_SECTION_PYLINT, EXCLUDE)) is not None:
+        exclude_paths = {os.path.normpath(path.strip()) for path in rawval.split(",")}
+        logging.debug("loaded exclude paths: %s", exclude_paths)
+
+    call(["pylint", "--"] + source_walk(".", exclude_paths))
 
 
 def run_flake8(ctx: Context):
@@ -124,8 +146,8 @@ def run_mypy(ctx: Context):
 
 def run_bandit(ctx: Context):
     """run the security-oriented code linter bandit"""
-    exclude_paths = []
-    if (rawval := get_setting(ctx.config, CONFIG_SECTION_BANDIT, EXCLUDE)) is not None:
+    exclude_paths: List[str] = []
+    if (rawval := ctx.get_setting(CONFIG_SECTION_BANDIT, EXCLUDE)) is not None:
         exclude_paths = [path.strip() for path in rawval.split(",")]
 
     if exclude_paths:
@@ -213,6 +235,8 @@ def main() -> int:
                 "the config file '%s' does not exist or is not a regular file",
                 args.config,
             )
+
+    # values that are settable in the config file or as args
 
     ctx = Context(args, confp)
     for step in handlers:
