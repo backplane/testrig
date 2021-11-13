@@ -63,6 +63,7 @@ jobs:
 
       - name: Load Custom Data
         id: cdata
+        shell: python
         run: |
           #!/usr/bin/env python3
           """ data conversion helper functions """
