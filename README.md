@@ -15,7 +15,7 @@ TestRig uses config keys found in [`setup.cfg`](/setup.cfg) to control the direc
 
 ## Docker Images
 
-This repo's images are automatically published to [backplane/testrig](https://hub.docker.com/r/backplane/testrig) on Docker Hub. Tags are in the format `{testrig_semver}-{python_version}-{distro_version}` (for example: `v0.6.3-3.7-alpine3.14`). In addition, the latest version of each distro image is available with these tags:
+This repo's images are automatically published to [backplane/testrig](https://hub.docker.com/r/backplane/testrig) on Docker Hub. Tags are in the format `{testrig_semver}-{python_version}-{distro_version}` (for example: `v0.8.0-3.7-alpine3.14`). In addition, the latest version of each distro image is available with these tags:
 
 * `backplane/testrig:latest-3-slim` - for use testing Python code in Debian-based containers
 * `backplane/testrig:latest-3-alpine` - for use testing Python code in Apline-based containers
@@ -53,26 +53,26 @@ This is the list of currently available images…
 * `backplane/testrig:latest-3.9-alpine`
 * `backplane/testrig:latest-3.9-slim-buster`
 * `backplane/testrig:latest-3.9-alpine3.14`
-* `backplane/testrig:v0.6.3-3-slim`
-* `backplane/testrig:v0.6.3-3-alpine`
-* `backplane/testrig:v0.6.3-3-slim-buster`
-* `backplane/testrig:v0.6.3-3-alpine3.14`
-* `backplane/testrig:v0.6.3-3.6-slim`
-* `backplane/testrig:v0.6.3-3.6-alpine`
-* `backplane/testrig:v0.6.3-3.6-slim-buster`
-* `backplane/testrig:v0.6.3-3.6-alpine3.14`
-* `backplane/testrig:v0.6.3-3.7-slim`
-* `backplane/testrig:v0.6.3-3.7-alpine`
-* `backplane/testrig:v0.6.3-3.7-slim-buster`
-* `backplane/testrig:v0.6.3-3.7-alpine3.14`
-* `backplane/testrig:v0.6.3-3.8-slim`
-* `backplane/testrig:v0.6.3-3.8-alpine`
-* `backplane/testrig:v0.6.3-3.8-slim-buster`
-* `backplane/testrig:v0.6.3-3.8-alpine3.14`
-* `backplane/testrig:v0.6.3-3.9-slim`
-* `backplane/testrig:v0.6.3-3.9-alpine`
-* `backplane/testrig:v0.6.3-3.9-slim-buster`
-* `backplane/testrig:v0.6.3-3.9-alpine3.14`
+* `backplane/testrig:v0.8.0-3-slim`
+* `backplane/testrig:v0.8.0-3-alpine`
+* `backplane/testrig:v0.8.0-3-slim-buster`
+* `backplane/testrig:v0.8.0-3-alpine3.14`
+* `backplane/testrig:v0.8.0-3.6-slim`
+* `backplane/testrig:v0.8.0-3.6-alpine`
+* `backplane/testrig:v0.8.0-3.6-slim-buster`
+* `backplane/testrig:v0.8.0-3.6-alpine3.14`
+* `backplane/testrig:v0.8.0-3.7-slim`
+* `backplane/testrig:v0.8.0-3.7-alpine`
+* `backplane/testrig:v0.8.0-3.7-slim-buster`
+* `backplane/testrig:v0.8.0-3.7-alpine3.14`
+* `backplane/testrig:v0.8.0-3.8-slim`
+* `backplane/testrig:v0.8.0-3.8-alpine`
+* `backplane/testrig:v0.8.0-3.8-slim-buster`
+* `backplane/testrig:v0.8.0-3.8-alpine3.14`
+* `backplane/testrig:v0.8.0-3.9-slim`
+* `backplane/testrig:v0.8.0-3.9-alpine`
+* `backplane/testrig:v0.8.0-3.9-slim-buster`
+* `backplane/testrig:v0.8.0-3.9-alpine3.14`
 
 ## demo
 
