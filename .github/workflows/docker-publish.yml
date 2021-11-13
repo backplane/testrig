@@ -82,9 +82,8 @@ jobs:
 
               output("distro", distro)
 
-
-          if __name__ == "__main__":
-              main()
+          print(f"started with name: {__name__}")
+          main()
 
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
