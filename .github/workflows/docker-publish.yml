@@ -68,22 +68,15 @@ jobs:
           #!/usr/bin/env python3
           """ data conversion helper functions """
 
-
           def output(name: str, value: str) -> None:
               """write a named output value in github actions format"""
               print(f"::set-output name={name}::{value}")
 
+          distro = "${{ matrix.DISTRO }}"
+          if distro.startswith("slim-"):
+            distro = distro.split("-")[1]  # slim-buster -> buster
 
-          def main() -> None:
-              """reformat some values from the build environment"""
-              distro = "${{ matrix.DISTRO }}"
-              if distro.startswith("slim-"):
-                  distro = distro.split("-")[1]  # slim-buster -> buster
-
-              output("distro", distro)
-
-          print(f"started with name: {__name__}")
-          main()
+          output("distro", distro)
 
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
