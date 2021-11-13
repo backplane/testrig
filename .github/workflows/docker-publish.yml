@@ -76,7 +76,7 @@ jobs:
 
           def main() -> None:
               """reformat some values from the build environment"""
-              distro = "${{ matrix.container }}"
+              distro = "${{ matrix.DISTRO }}"
               if distro.startswith("slim-"):
                   distro = distro.split("-")[1]  # slim-buster -> buster
 
