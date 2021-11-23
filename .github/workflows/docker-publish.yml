@@ -9,23 +9,19 @@ on:
   schedule:
     - cron: '30 18 * * *'
   push:
-    # branches: [ main ]
+    # branches: [main]
     # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
+    tags: ['v*.*.*']
   # pull_request:
-  #   branches: [ main ]
+  #   branches: [main]
 
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: docker.io
-
-  # github.repository as <account>/<repo>
-  #IMAGE_NAME: ${{ github.repository }}
-
   IMAGE_NAME: backplane/testrig
+
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
