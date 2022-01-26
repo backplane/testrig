@@ -1,4 +1,4 @@
-bandit~=1.7.1
+bandit~=1.7.2
 black~=21.12b0
 bpython~=0.22
 flake8~=4.0.1
