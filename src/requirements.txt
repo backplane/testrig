@@ -6,4 +6,4 @@ isort~=5.10.1
 mypy~=0.920
 pycodestyle~=2.8.0
 pylint~=2.12.2
-pytest~=6.2.5
+pytest~=7.0.1
