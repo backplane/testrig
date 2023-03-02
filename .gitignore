@@ -1,2 +1,4 @@
-.vscode
-venv
+**/.DS_Store
+**/.mypy_cache
+**/.vscode
+**/venv

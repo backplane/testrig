@@ -9,11 +9,6 @@ warn() {
   printf '%s %s %s\n' "$(date '+%FT%T')" "$SELF" "$*" >&2
 }
 
-die() {
-  warn "FATAL:" "$@"
-  exit 1
-}
-
 main() {
   set -e
 
@@ -21,7 +16,7 @@ main() {
   rsync -aqhHSXA --delete "$@" -- "${SRC_DIR}/." "${DEST_DIR}/."
 
   warn "done"
-  exit 0
+  true
 }
 
 main "$@"; exit
