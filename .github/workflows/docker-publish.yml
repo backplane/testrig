@@ -28,13 +28,15 @@ jobs:
         DISTRO:
           - 'slim-buster'
           - 'slim-bullseye'
-          - 'alpine3.14'
+          - 'slim-bookworm'
           - 'alpine3.15'
+          - 'alpine3.16'
+          - 'alpine3.17'
         PYTHON_VERSION:
-          - '3.7'
           - '3.8'
           - '3.9'
           - '3.10'
+          - '3.11'
 
     permissions:
       contents: read
