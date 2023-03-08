@@ -23,12 +23,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # https://www.debian.org/releases/
-        # https://alpinelinux.org/releases/
         DISTRO:
+          # https://www.debian.org/releases/
           - 'slim-buster'
           - 'slim-bullseye'
           - 'slim-bookworm'
+          # https://alpinelinux.org/releases/
           - 'alpine3.15'
           - 'alpine3.16'
           - 'alpine3.17'
