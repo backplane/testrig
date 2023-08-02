@@ -38,24 +38,24 @@ class Context(NamedTuple):
 def call(cmd: List[str]):
     """run the given utility, logging its output"""
     # derived from https://stackoverflow.com/a/21978778
-    logging.debug("running command: %s", cmd.__repr__())
-    process = subprocess.Popen(  # nosec B603 not allowing untrusted
+    logging.debug("running command: %s", repr(cmd))
+    with subprocess.Popen(  # nosec B603 not allowing untrusted
         cmd,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
-    )
-    if process is None or process.stdout is None:  # strictly for mypy
-        raise RuntimeError("unexpected subprocess response")
-    with process.stdout as pipe:
-        for line in iter(pipe.readline, b""):  # b'\n'-separated lines
-            logging.info(
-                "%s: %s",
-                cmd[0],
-                line.decode("utf-8", errors="replace").strip(),
-            )
-    exit_code = process.wait()
-    if exit_code != 0:
-        raise subprocess.CalledProcessError(exit_code, cmd)
+    ) as process:
+        if process is None or process.stdout is None:  # strictly for mypy
+            raise RuntimeError("unexpected subprocess response")
+        with process.stdout as pipe:
+            for line in iter(pipe.readline, b""):  # b'\n'-separated lines
+                logging.info(
+                    "%s: %s",
+                    cmd[0],
+                    line.decode("utf-8", errors="replace").strip(),
+                )
+        exit_code = process.wait()
+        if exit_code != 0:
+            raise subprocess.CalledProcessError(exit_code, cmd)
 
 
 def source_walk(root: str, exclude: Optional[Set[str]] = None) -> List[str]:
@@ -67,7 +67,7 @@ def source_walk(root: str, exclude: Optional[Set[str]] = None) -> List[str]:
     exclusions = set() if exclude is None else exclude
     full_path_compare = False
 
-    if any([os.path.sep in excl for excl in exclusions]):
+    if any(os.path.sep in excl for excl in exclusions):
         # one of the exclusions contains a slash, meaning during the walk
         # we need to compare the exclusion list to each subdir name, but with
         # the path prepended
@@ -225,7 +225,7 @@ def main() -> int:
     # read the setup.cfg file (or whatever the user said)
     confp = None
     if os.path.isfile(args.config):
-        with open(args.config, "rt") as configfh:
+        with open(args.config, "rt", encoding="utf-8") as configfh:
             confp = configparser.ConfigParser()
             confp.read_file(configfh, args.config)
     else:
@@ -239,13 +239,13 @@ def main() -> int:
     # values that are settable in the config file or as args
 
     ctx = Context(args, confp)
-    for step in handlers:
+    for step, handler in handlers.items():
         if step in args.skip:
             logging.debug("skipping %s", step)
             continue
         banner(step)
         try:
-            handlers[step](ctx)
+            handler(ctx)
         except subprocess.CalledProcessError as err:
             if step in args.failok:
                 logging.warning(
